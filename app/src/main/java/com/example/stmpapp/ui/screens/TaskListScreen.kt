@@ -13,7 +13,7 @@ import com.example.stmpapp.ui.components.TaskItem
 fun TaskListScreen(viewModel: TaskViewModel) {
     var newTask by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().statusBarsPadding().padding(16.dp)) {
         OutlinedTextField(
             value = newTask,
             onValueChange = { newTask = it },
