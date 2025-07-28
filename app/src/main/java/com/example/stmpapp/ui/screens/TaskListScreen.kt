@@ -1,15 +1,20 @@
-package com.example.stmpapp.ui.screens
-
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.*
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.stmpapp.data.TaskViewModel
-import com.example.stmpapp.ui.components.FilterDropdown
 import com.example.stmpapp.ui.components.TaskItem
+
 
 @Preview
 @Composable
@@ -21,74 +26,54 @@ fun TaskListScreenPreview() {
 @Composable
 fun TaskListScreen(viewModel: TaskViewModel) {
     var newTask by remember { mutableStateOf("") }
-    var filter by remember { mutableStateOf("All") }
 
-    Column(
+    Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(16.dp)
-    ) {
-        OutlinedTextField(
-            value = newTask,
-            onValueChange = { newTask = it },
-            label = { Text("New Task") },
-            modifier = Modifier.fillMaxWidth()
-        )
+            .fillMaxSize(),
+        contentWindowInsets = WindowInsets.systemBars, // ⬅️ Automatikus insets!
+    ) { innerPadding ->
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .fillMaxSize()
+                .padding(innerPadding) // ⬅️ Ez adja hozzá a status/nav bar paddinget
+                .padding(16.dp) // opcionális: belső padding dizájnhoz
         ) {
-            Button(onClick = {
-                viewModel.addTask(newTask)
-                newTask = ""
-            }) {
-                Text("Add")
+            OutlinedTextField(
+                value = newTask,
+                onValueChange = { newTask = it },
+                label = { Text("Enter task") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    viewModel.addTask(newTask)
+                    newTask = ""
+                },
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Text("Add Task")
             }
 
-            FilterDropdown(
-                selectedFilter = filter,
-                onFilterChange = { filter = it }
-            )
-        }
-
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            val filteredTasks = viewModel.tasks.filter {
-                when (filter) {
-                    "Completed" -> it.isCompleted
-                    "Incomplete" -> !it.isCompleted
-                    else -> true
+            LazyColumn(
+                modifier = Modifier.weight(1f)
+            ) {
+                items(viewModel.tasks.size) { index ->
+                    val task = viewModel.tasks[index]
+                    TaskItem(
+                        task = task,
+                        onToggleComplete = { viewModel.toggleCompleted(task.id) },
+                        onToggleSelect = { viewModel.toggleSelection(task.id) }
+                    )
                 }
             }
 
-            items(filteredTasks.size) { index ->
-                val task = filteredTasks[index]
-                TaskItem(
-                    task = task,
-                    onToggleComplete = { viewModel.toggleCompleted(task.id) },
-                    onToggleSelect = { viewModel.toggleSelection(task.id) }
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(onClick = { viewModel.markSelected(true) }) {
-                Text("Mark Completed")
-            }
-            Button(onClick = { viewModel.markSelected(false) }) {
-                Text("Mark Incomplete")
-            }
-            Button(onClick = { viewModel.deleteSelected() }) {
-                Text("Delete")
+            Button(
+                onClick = { viewModel.deleteSelected() },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text("Delete Selected")
             }
         }
     }
