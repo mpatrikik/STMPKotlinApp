@@ -5,34 +5,68 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stmpapp.data.TaskViewModel
+import com.example.stmpapp.ui.components.FilterDropdown
 import com.example.stmpapp.ui.components.TaskItem
+
+@Preview
+@Composable
+fun TaskListScreenPreview() {
+    val viewModel = TaskViewModel()
+    TaskListScreen(viewModel)
+}
 
 @Composable
 fun TaskListScreen(viewModel: TaskViewModel) {
     var newTask by remember { mutableStateOf("") }
+    var filter by remember { mutableStateOf("All") }
 
-    Column(modifier = Modifier.fillMaxSize().statusBarsPadding().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(16.dp)
+    ) {
         OutlinedTextField(
             value = newTask,
             onValueChange = { newTask = it },
-            label = { Text("Enter task") },
+            label = { Text("New Task") },
             modifier = Modifier.fillMaxWidth()
         )
-        Button(
-            onClick = {
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Button(onClick = {
                 viewModel.addTask(newTask)
                 newTask = ""
-            },
-            modifier = Modifier.padding(top = 8.dp)
-        ) {
-            Text("Add Task")
+            }) {
+                Text("Add")
+            }
+
+            FilterDropdown(
+                selectedFilter = filter,
+                onFilterChange = { filter = it }
+            )
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(viewModel.tasks.size) { index ->
-                val task = viewModel.tasks[index]
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            val filteredTasks = viewModel.tasks.filter {
+                when (filter) {
+                    "Completed" -> it.isCompleted
+                    "Incomplete" -> !it.isCompleted
+                    else -> true
+                }
+            }
+
+            items(filteredTasks.size) { index ->
+                val task = filteredTasks[index]
                 TaskItem(
                     task = task,
                     onToggleComplete = { viewModel.toggleCompleted(task.id) },
@@ -41,11 +75,21 @@ fun TaskListScreen(viewModel: TaskViewModel) {
             }
         }
 
-        Button(
-            onClick = { viewModel.deleteSelected() },
-            modifier = Modifier.padding(top = 16.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text("Delete Selected")
+            Button(onClick = { viewModel.markSelected(true) }) {
+                Text("Mark Completed")
+            }
+            Button(onClick = { viewModel.markSelected(false) }) {
+                Text("Mark Incomplete")
+            }
+            Button(onClick = { viewModel.deleteSelected() }) {
+                Text("Delete")
+            }
         }
     }
 }

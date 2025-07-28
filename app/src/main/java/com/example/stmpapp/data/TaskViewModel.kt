@@ -13,26 +13,27 @@ class TaskViewModel : ViewModel() {
 
     fun toggleCompleted(taskId: String) {
         tasks = tasks.map {
-            if (it.id == taskId) it.copy(completed = !it.completed)
+            if (it.id == taskId) it.copy(isCompleted = !it.isCompleted)
              else it
         }
     }
 
     fun toggleSelection(taskId: String) {
         tasks = tasks.map {
-            if (it.id == taskId) it.copy(selected = !it.selected)
+            if (it.id == taskId) it.copy(isSelected = !it.isSelected)
             else it
         }
     }
 
     fun deleteSelected() {
-        tasks = tasks.filter { !it.selected }
+        tasks = tasks.filter { !it.isSelected }
     }
 
-    fun deleteTask(taskId: String) {
+    fun markSelected(completed: Boolean) {
         tasks = tasks.map {
-            if (it.id == taskId) it.copy(selected = !it.selected)
+            if (it.isSelected) it.copy(isCompleted = completed)
             else it
         }
     }
+
 }
