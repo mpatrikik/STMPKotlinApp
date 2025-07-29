@@ -102,7 +102,8 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 
                         ExposedDropdownMenu(
                             expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.width(IntrinsicSize.Max)
                         ) {
                             filterOptions.forEach { selectionOption ->
                                 DropdownMenuItem(
