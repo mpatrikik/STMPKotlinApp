@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ fun TaskListScreenPreview() {
 fun TaskListScreen(viewModel: TaskViewModel) {
     var newTask by remember { mutableStateOf("") }
     var currentFilter by remember { mutableStateOf(TaskFilter.ALL) }
+    var showEmptyTaskDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier
@@ -72,7 +74,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                         if (newTask.isNotBlank()) {
                             viewModel.addTask(newTask)
                             newTask = ""
-                        }
+                        } else { showEmptyTaskDialog = true }
                     },
                     modifier = Modifier.weight(1f).fillMaxHeight()
                 ) {
@@ -117,6 +119,21 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                         }
                     }
                 }
+            }
+
+            if (showEmptyTaskDialog) {
+                AlertDialog(
+                    onDismissRequest = { showEmptyTaskDialog = false },
+                    title = { Text("Empty Task") },
+                    text = { Text("Task description cannot be empty.") },
+                    confirmButton = {
+                        Button(
+                            onClick = { showEmptyTaskDialog = false }
+                        ) {
+                            Text("OK")
+                        }
+                    }
+                )
             }
 
             val filteredTasks = remember(viewModel.tasks, currentFilter) {
