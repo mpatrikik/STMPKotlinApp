@@ -34,7 +34,7 @@ fun TaskListScreenPreview() {
     TaskListScreen(viewModel)
 }
 
-@OptIn(ExperimentalMaterial3Api::class) // Needed for ExposedDropdownMenuBox
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(viewModel: TaskViewModel) {
     var newTask by remember { mutableStateOf("") }
@@ -87,10 +87,10 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 Box(modifier = Modifier.wrapContentWidth()) {
                     ExposedDropdownMenuBox(
                         expanded = expanded,
-                        onExpandedChange = { expanded = !expanded }
+                        onExpandedChange = { if (!it) { expanded = false } }
                     ) {
                         Button(
-                            onClick = { expanded = true },
+                            onClick = { expanded = !expanded },
                             modifier = Modifier
                                 .menuAnchor()
                                 .fillMaxHeight(),
