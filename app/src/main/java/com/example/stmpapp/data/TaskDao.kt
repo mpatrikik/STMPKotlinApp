@@ -32,7 +32,7 @@ interface TaskDao {
     suspend fun deleteTasksByIds(taskIds: List<String>)
 
     @Query("DELETE FROM tasks WHERE isSelected = 1")
-    suspend fun clearCompletedTasks()
+    suspend fun deleteSelectedTasks()
 
 
 }

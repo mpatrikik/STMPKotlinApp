@@ -7,19 +7,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.stmpapp.data.Task
+import com.example.stmpapp.data.TaskUiModel
 
 
 @Preview
 @Composable
 fun TaskItemPreview() {
-    val task = Task(description = "Task 1")
-    TaskItem(task = task, onToggleComplete = {}, onToggleSelect = {})
+    val taskUiModel = TaskUiModel(
+        id = "1",
+        description = "Task 1",
+        isCompleted = false,
+        isSelected = false
+    )
+    TaskItem(
+        task = taskUiModel,
+        onToggleComplete = {},
+        onToggleSelect = {}
+    )
 }
 
 @Composable
 fun TaskItem(
-    task: Task,
+    task: TaskUiModel,
     onToggleComplete: () -> Unit,
     onToggleSelect: () -> Unit
 ) {

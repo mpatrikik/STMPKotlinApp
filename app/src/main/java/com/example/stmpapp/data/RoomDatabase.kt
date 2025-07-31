@@ -8,19 +8,19 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Task::class], version = 1, exportSchema = false)
 
-public abstract class AddDatabase : RoomDatabase() {
+public abstract class AppDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AddDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): AddDatabase {
+        fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    AddDatabase::class.java,
+                    AppDatabase::class.java,
                     "task_database"
                 ).build()
                 INSTANCE = instance

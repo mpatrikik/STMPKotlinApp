@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -13,7 +12,7 @@ import kotlin.collections.filter
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val taskDao = AddDatabase.getDatabase(application).taskDao()
+    private val taskDao = AppDatabase.getDatabase(application).taskDao()
 
     var tasks: StateFlow<List<TaskUiModel>> = taskDao.getAllTasks()
         .map { tasks -> tasks.map { TaskUiModel.fromTask(it) } }
