@@ -28,12 +28,12 @@ enum class TaskFilter {
     INCOMPLETE
 }
 
-@Preview
-@Composable
-fun TaskListScreenPreview() {
-    val viewModel = TaskViewModel()
-    TaskListScreen(viewModel)
-}
+//@Preview
+//@Composable
+//fun TaskListScreenPreview() {
+//    val viewModel = TaskViewModel()
+//    TaskListScreen(viewModel)
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
