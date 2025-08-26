@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import com.example.stmpapp.data.TaskViewModel
+import com.example.stmpapp.ui.theme.STMPAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,7 +16,9 @@ class MainActivity : ComponentActivity() {
         val repository = TaskRepository(this)
         val viewModel = TaskViewModel(repository)
         setContent {
-            TaskListScreen(viewModel)
+            STMPAppTheme {
+                TaskListScreen(viewModel)
+            }
         }
     }
 }
