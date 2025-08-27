@@ -41,15 +41,16 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun generateRandomTaskId() {
-        val randomId = TaskUtils.generateRandomTaskId()
+    fun task_constructor_assigning_id() {
+        val taskDescription = "Test task with random ID"
+        val myTask = Task(description = taskDescription)
+        val generatedId = myTask.id
 
-        assertNotNull("Generated ID should not be null", randomId)
-        assertTrue("Generated ID should not be empty", randomId.isNotEmpty())
-        assertTrue("Generated ID should contain hyphens (typical for UUID)", randomId.contains("-"))
-        assertEquals("Generated ID should have a standard UUID length", 36, randomId.length)
+        assertNotNull(generatedId)
+        assertTrue(generatedId.isNotEmpty())
+        assertEquals(36, generatedId.length)
+        assertTrue(generatedId.contains("-"))
 
-        System.out.println("\nGenerated Task ID: $randomId")
-        System.out.println("\n")
+        println("Generated ID: $generatedId for task: '${myTask.description}'")
     }
 }
