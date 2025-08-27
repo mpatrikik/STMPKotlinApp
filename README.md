@@ -7,6 +7,9 @@
 - TaskService layer ✔️
 - Unit test(s) for TaskService ✔️
 - Base exception handlings ✔️
+- Task input validation (max value input, characters) ?
+- Task deletion confirm dialog ?
+- In ExampleUnitTest.kt: get the id from Task.kt ?
 
 ---
 
