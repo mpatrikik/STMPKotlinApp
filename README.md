@@ -7,9 +7,10 @@
 - TaskService layer ✔️
 - Unit test(s) for TaskService ✔️
 - Base exception handlings ✔️
-- Task input validation (max value input, characters) ?
+- Task input validation (max value input, characters) ✔️
 - Task deletion confirm dialog ?
-- In ExampleUnitTest.kt: get the id from Task.kt ?
+- Maybe a UX update for replacing the delete button next to the task description ?
+- In ExampleUnitTest.kt: get the id from Task.kt ✔️
 
 ---
 

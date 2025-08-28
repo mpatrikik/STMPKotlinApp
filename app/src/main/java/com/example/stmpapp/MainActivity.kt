@@ -1,6 +1,6 @@
 package com.example.stmpapp
 
-import TaskListScreen
+import com.example.stmpapp.ui.screens.TaskListScreen
 import TaskRepository
 import android.os.Bundle
 import androidx.activity.ComponentActivity

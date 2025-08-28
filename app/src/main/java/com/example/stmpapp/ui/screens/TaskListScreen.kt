@@ -1,3 +1,5 @@
+package com.example.stmpapp.ui.screens
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.OutlinedTextField
@@ -11,15 +13,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.stmpapp.data.TaskViewModel // Assuming Task class has isCompleted
 import com.example.stmpapp.ui.components.TaskItem
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,11 +55,19 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
-        ) {
+        )
+        {
             OutlinedTextField(
                 value = newTask,
-                onValueChange = { newTask = it },
-                label = { Text("Enter task") },
+                onValueChange = {
+                    val filteredText = it.filter { char ->
+                        char.isLetterOrDigit() && char in 'a'..'z' || char in 'A'..'Z' || char in '0'..'9' ||
+                                "áéíóöőúüűÁÉÍÓÖŐÚÜŰ".contains(char)
+                    }
+                    newTask = if (filteredText.length <= 20) filteredText else filteredText.substring(0, 20)
+                },
+                label = { Text("Enter task (max 20 Hungarian letters/numbers)") },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -86,7 +94,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 Spacer(modifier = Modifier.width(8.dp))
 
                 var expanded by remember { mutableStateOf(false) }
-                val filterOptions = TaskFilter.values()
+                val filterOptions = TaskFilter.entries.toTypedArray()
 
                 Box(modifier = Modifier.wrapContentWidth()) {
                     ExposedDropdownMenuBox(
@@ -96,7 +104,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                         Button(
                             onClick = { expanded = !expanded },
                             modifier = Modifier
-                                .menuAnchor()
+                                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                                 .fillMaxHeight(),
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                         ) {
