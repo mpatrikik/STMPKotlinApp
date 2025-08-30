@@ -1,10 +1,12 @@
 package com.example.stmpapp.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val MyPrimary = Color(0xFF1E88E5)
 val MySecondary = Color(0xFFD81B60)
-val MyBackground = Color(0xFFC6FFC7)
+val MyBackgroundGradient = Brush.verticalGradient(colors = listOf(Color(0xFF572EFF), Color(0xFF37A1FF)))
+val MyBackground = Color(0xFF121212)
 val MySurface = Color(0xFFFFFFFF)
 val MyOnPrimary = Color(0xFFFFFFFF)
 val MyOnSecondary = Color(0xFFFFFFFF)

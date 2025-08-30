@@ -1,5 +1,6 @@
 package com.example.stmpapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.OutlinedTextField
@@ -11,18 +12,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Modifier
-import com.example.stmpapp.data.TaskViewModel // Assuming Task class has isCompleted
+import com.example.stmpapp.data.TaskViewModel
 import com.example.stmpapp.ui.components.TaskItem
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color // Ensure Color is imported
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.sp
+import com.example.stmpapp.ui.theme.MyBackgroundGradient
+
+// Removed: import com.example.stmpapp.ui.theme.MyBackgroundGradient // Not needed here anymore
 
 enum class TaskFilter {
     ALL,
@@ -30,26 +40,21 @@ enum class TaskFilter {
     INCOMPLETE
 }
 
-//@Preview
-//@Composable
-//fun TaskListScreenPreview() {
-//    val viewModel = TaskViewModel()
-//    TaskListScreen(viewModel)
-//}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(viewModel: TaskViewModel) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     var newTask by remember { mutableStateOf("") }
     var currentFilter by remember { mutableStateOf(TaskFilter.ALL) }
     var showEmptyTaskDialog by remember { mutableStateOf(false) }
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets.systemBars,
     ) { innerPadding ->
-
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize().background(brush = MyBackgroundGradient))
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -84,6 +89,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                         if (newTask.isNotBlank()) {
                             viewModel.addTask(newTask)
                             newTask = ""
+                            keyboardController?.hide()
                         } else { showEmptyTaskDialog = true }
                     },
                     modifier = Modifier.weight(1f).fillMaxHeight()
@@ -146,6 +152,31 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 )
             }
 
+            if (showDeleteConfirmationDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteConfirmationDialog = false },
+                    title = { Text("Confirm Deletion") },
+                    text = { Text("Are you sure you want to delete the selected task(s)?") },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.deleteSelected()
+                                showDeleteConfirmationDialog = false
+                            }
+                        ) {
+                            Text("Confirm")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showDeleteConfirmationDialog = false }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
+
             val filteredTasks = remember(viewModel.tasks, currentFilter) {
                 when (currentFilter) {
                     TaskFilter.ALL -> viewModel.tasks.toList()
@@ -169,7 +200,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 LazyColumn(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(top = 8.dp) // Add some space above the list
+                        .padding(top = 8.dp)
                 ) {
                     items(filteredTasks.size) { index ->
                         val task = filteredTasks[index]
@@ -185,12 +216,18 @@ fun TaskListScreen(viewModel: TaskViewModel) {
 
             if (viewModel.tasks.any { it.isSelected }) {
                 Button(
-                    onClick = { viewModel.deleteSelected() },
+                    onClick = { showDeleteConfirmationDialog = true },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
-                ) {
-                    Text("Delete Selected")
+                        .size(60.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                )
+                {
+                    Text(
+                        text = "Delete selected",
+                        fontSize = 20.sp
+                    )
                 }
             }
         }

@@ -5,6 +5,11 @@ import TaskRepository
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
+import com.example.stmpapp.ui.theme.MyBackgroundGradient
+import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import com.example.stmpapp.data.TaskViewModel
 import com.example.stmpapp.ui.theme.STMPAppTheme
@@ -17,7 +22,13 @@ class MainActivity : ComponentActivity() {
         val viewModel = TaskViewModel(repository)
         setContent {
             STMPAppTheme {
-                TaskListScreen(viewModel)
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(brush = MyBackgroundGradient)
+                ) {
+                    TaskListScreen(viewModel)
+                }
             }
         }
     }
