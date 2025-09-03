@@ -32,8 +32,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.sp
 import com.example.stmpapp.ui.theme.MyBackgroundGradient
 
-// Removed: import com.example.stmpapp.ui.theme.MyBackgroundGradient // Not needed here anymore
-
 enum class TaskFilter {
     ALL,
     COMPLETED,
@@ -47,7 +45,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
     var newTask by remember { mutableStateOf("") }
     var currentFilter by remember { mutableStateOf(TaskFilter.ALL) }
     var showEmptyTaskDialog by remember { mutableStateOf(false) }
-    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    var tasktToDeleteId: String? by remember { mutableStateOf(null) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -94,7 +92,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                     },
                     modifier = Modifier.weight(1f).fillMaxHeight()
                 ) {
-                    Text("Add task")
+                    Text(text = "Add task", fontSize = 18.sp)
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -152,16 +150,16 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 )
             }
 
-            if (showDeleteConfirmationDialog) {
+            if(tasktToDeleteId != null) {
                 AlertDialog(
-                    onDismissRequest = { showDeleteConfirmationDialog = false },
-                    title = { Text("Confirm Deletion") },
-                    text = { Text("Are you sure you want to delete the selected task(s)?") },
+                    onDismissRequest = { tasktToDeleteId = null },
+                    title = { Text("Delete Task") },
+                    text = { Text("Are you sure you want to delete this task?") },
                     confirmButton = {
                         Button(
                             onClick = {
-                                viewModel.deleteSelected()
-                                showDeleteConfirmationDialog = false
+                                tasktToDeleteId?.let { viewModel.deleteTask(it) }
+                                tasktToDeleteId = null
                             }
                         ) {
                             Text("Confirm")
@@ -169,7 +167,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                     },
                     dismissButton = {
                         TextButton(
-                            onClick = { showDeleteConfirmationDialog = false }
+                            onClick = { tasktToDeleteId = null }
                         ) {
                             Text("Cancel")
                         }
@@ -207,27 +205,9 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                         TaskItem(
                             task = task,
                             onToggleComplete = { viewModel.toggleCompleted(task.id) },
-                            onToggleSelect = { viewModel.toggleSelection(task.id) }
+                            onDelete = { tasktToDeleteId = task.id }
                         )
                     }
-                }
-            }
-
-
-            if (viewModel.tasks.any { it.isSelected }) {
-                Button(
-                    onClick = { showDeleteConfirmationDialog = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                        .size(60.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                )
-                {
-                    Text(
-                        text = "Delete selected",
-                        fontSize = 20.sp
-                    )
                 }
             }
         }

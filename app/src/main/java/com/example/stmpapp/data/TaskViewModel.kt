@@ -29,24 +29,8 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
         saveTasks()
     }
 
-    fun toggleSelection(taskId: String) {
-        tasks = tasks.map {
-            if (it.id == taskId) it.copy(isSelected = !it.isSelected)
-            else it
-        }
-        saveTasks()
-    }
-
-    fun deleteSelected() {
-        tasks = tasks.filter { !it.isSelected }
-        saveTasks()
-    }
-
-    fun markSelected(completed: Boolean) {
-        tasks = tasks.map {
-            if (it.isSelected) it.copy(isCompleted = completed)
-            else it
-        }
+    fun deleteTask(taskId: String) {
+        tasks = tasks.filter { it.id != taskId }
         saveTasks()
     }
 
