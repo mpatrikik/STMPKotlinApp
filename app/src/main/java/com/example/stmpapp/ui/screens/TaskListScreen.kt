@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Modifier
@@ -22,15 +21,17 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color // Ensure Color is imported
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.TextStyle
 import com.example.stmpapp.ui.theme.MyBackgroundGradient
+import com.example.stmpapp.ui.theme.gradientTitleColors
 
 enum class TaskFilter {
     ALL,
@@ -60,6 +61,18 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 .padding(16.dp)
         )
         {
+            Text(
+                text = "Simple Task List",
+                fontSize = 35.sp,
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(
+                    brush = gradientTitleColors
+                    ),
+                modifier = Modifier
+                    .padding(top = 25.dp, bottom = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+
             OutlinedTextField(
                 value = newTask,
                 onValueChange = {
@@ -71,7 +84,7 @@ fun TaskListScreen(viewModel: TaskViewModel) {
                 },
                 label = { Text("Enter task (max 20 Hungarian letters/numbers)") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
             )
 
             Row(
